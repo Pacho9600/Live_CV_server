@@ -13,6 +13,9 @@ Relevant routes:
 - Browser login:
   - GET  `/desktop/login?...` (HTML)
   - POST `/desktop/login`       (form submit)
+- Browser registration (multi-step):
+  - GET  `/desktop/register` (Step 1: Data)
+  - Steps: `/desktop/register/email`, `/desktop/register/2fa`, `/desktop/register/payment`, `/desktop/register/review`
 - Desktop exchange:
   - POST `/api/auth/desktop/exchange` (PKCE verify + returns JWT)
 - API:
@@ -20,4 +23,5 @@ Relevant routes:
   - GET `/health`
 
 DB:
-- SQLite file `app.db` in the `server/` folder.
+- SQLite file `app.db` in the repo root by default (`Live_CV_server/app.db`).
+- Stripe payment step requires `STRIPE_SECRET_KEY` (see `.env.example`).

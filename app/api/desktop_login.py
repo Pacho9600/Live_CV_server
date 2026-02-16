@@ -72,6 +72,41 @@ def _page(error: str | None, state: str, redirect_uri: str, code_challenge: str,
   </div>
 
 <script>
+  let submitting = false;
+  const form = document.querySelector("form");
+  if (form) {{
+    form.addEventListener("submit", () => {{ submitting = true; }});
+  }}
+
+  function notifyDesktopCanceled() {{
+    if (submitting) return;
+    try {{
+      const redirectInput = document.querySelector("input[name=redirect_uri]");
+      const stateInput = document.querySelector("input[name=state]");
+      const redirectUri = redirectInput ? redirectInput.value : "";
+      const state = stateInput ? stateInput.value : "";
+      if (!redirectUri || !state) return;
+
+      const u = new URL(redirectUri);
+      u.searchParams.set("state", state);
+      u.searchParams.set("cancel", "1");
+      const url = u.toString();
+      if (navigator.sendBeacon) {{
+        navigator.sendBeacon(url, "");
+      }} else {{
+        fetch(url, {{
+          method: "GET",
+          mode: "no-cors",
+          keepalive: true,
+        }});
+      }}
+    }} catch (_) {{}}
+  }}
+
+  // Best-effort: when the user closes this tab, tell the desktop app to stop waiting.
+  window.addEventListener("pagehide", notifyDesktopCanceled);
+  window.addEventListener("beforeunload", notifyDesktopCanceled);
+
   const pw = document.getElementById("password");
   const toggle = document.getElementById("toggle");
   toggle.addEventListener("click", () => {{

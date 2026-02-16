@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     EXAMPLE_USER_PASSWORD: str = "DemoPass123!"
     EXAMPLE_USER_ROLE: str = "admin"
 
+    STRIPE_SECRET_KEY: str | None = None
+    STRIPE_CURRENCY: str = "usd"
+    STRIPE_UNIT_AMOUNT: int = 2000  # cents
+    STRIPE_PRODUCT_NAME: str = "Architecture Showcase - Access"
+
     @model_validator(mode="after")
     def _normalize_database_url(self):
         url = self.DATABASE_URL
